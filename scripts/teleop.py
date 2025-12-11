@@ -15,15 +15,15 @@ class KeyboardController(Node):
     def __init__(self):
         super().__init__('keyboard_ctrl')
         self.set = self.create_client(
-            SetEntityState, 'sauvc_sim/set_entity_state')
+            SetEntityState, 'ceto_description/set_entity_state')
         self.get = self.create_client(
-            GetEntityState, 'sauvc_sim/get_entity_state')
+            GetEntityState, 'ceto_description/get_entity_state')
         while not self.set.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('sauvc_sim/set_entity_state not available, waiting again...')
+            self.get_logger().info('ceto_description/set_entity_state not available, waiting again...')
         while not self.get.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('sauvc_sim/get_entity_state not available, waiting again...')
+            self.get_logger().info('ceto_description/get_entity_state not available, waiting again...')
 
-        self.model_name = "orca"
+        self.model_name = "bluerov2"
         self.LIN_VEL_STEP = 0.1
         self.ANG_VEL_STEP = 0.1
 

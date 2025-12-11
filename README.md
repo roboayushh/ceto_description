@@ -47,5 +47,6 @@ Ensure you have the following installed:
 
 To launch the SAUVC world, spawn the BlueROV2 robot, and start the ROS-Gazebo bridge:
 
-```bash
-ros2 launch ceto_description launch.py
+```
+ros2 run sauvc_sim teleop.py
+```
