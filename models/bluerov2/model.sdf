@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <sdf version="1.6">
   <model name="bluerov2">
-    <pose>0 0 0 0 0 0</pose>
 
     <!-- bluerov2 thruster reference: http://www.ardusub.com/introduction/features.html -->
 
@@ -19,7 +18,7 @@
         </inertia>
       </inertial>
 
-    <visual name="base_link_visual">
+      <visual name="base_link_visual">
         <geometry>
           <mesh>
             <uri>/home/auv/ceto_ws/src/ceto_description/models/meshes/bluerov2.dae</uri>
@@ -38,10 +37,7 @@
         </geometry>
       </collision>
 
-      <!-- IMU sensor gyro and accel data will be sent to ArduSub -->
       <sensor name="imu_sensor" type="imu">
-        <!-- Transform from the Gazebo body frame (x-forward, y-left, z-up)
-             to the ArduPilot body frame (x-forward, y-right, z-down) -->
         <pose>0 0 0 3.142 0 0</pose>
         <always_on>1</always_on>
         <update_rate>1000.0</update_rate>
@@ -50,56 +46,27 @@
 
     </link>
 
-    <link name="camera_link">
-      <pose relative_to="camera_mount_link">0 0 0 0 0 0</pose>
+    <!-- <link name="camera_link">
       <inertial>
         <mass>0.0001</mass>
         <inertia>
           <ixx>0.0001</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
+          <ixy>0.0001</ixy>
+          <ixz>0.0001</ixz>
           <iyy>0.0001</iyy>
           <iyz>0</iyz>
           <izz>0.0001</izz>
         </inertia>
       </inertial>
-      <!-- <sensor name="underwater_camera" type="rgbd_camera">
-        <update_rate>10</update_rate>
-        <visualize>true</visualize>
-        <always_on>1</always_on>
-        <topic>/model/camera</topic>
-        <camera>
-          <horizontal_fov>1.05</horizontal_fov>
-          <image>
-            <width>1920</width>
-            <height>1080</height>
-          </image>
-          <clip>
-            <near>0.1</near>
-            <far>10.0</far>
-          </clip>
-        </camera>
-        <plugin
-          filename="UnderwaterCamera"
-          name="dave_gz_sensor_plugins::UnderwaterCamera">
-          <attenuationR>0.8</attenuationR>
-          <attenuationG>0.5</attenuationG>
-          <attenuationB>0.2</attenuationB>
-          <backgroundR>85</backgroundR>
-          <backgroundG>107</backgroundG>
-          <backgroundB>47</backgroundB>
-        </plugin>
-      </sensor> -->
     </link>
 
     <link name="camera_mount_link">
-      <pose relative_to="base_link">0.19 0 0.067 0 0 0</pose>
       <inertial>
         <mass>0.0001</mass>
         <inertia>
           <ixx>0.0001</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
+          <ixy>0.0001</ixy>
+          <ixz>0.0001</ixz>
           <iyy>0.0001</iyy>
           <iyz>0</iyz>
           <izz>0.0001</izz>
@@ -115,7 +82,7 @@
     <joint name="camera_mount_joint" type="fixed">
       <parent>base_link</parent>
       <child>camera_mount_link</child>
-    </joint>
+    </joint> -->
 
     <!-- Hydrodynamics plugin -->
     <plugin
@@ -404,7 +371,7 @@
     <plugin
       filename="libignition-gazebo-odometry-publisher-system"
       name="ignition::gazebo::systems::OdometryPublisher">
-      <odom_frame>map</odom_frame>
+      <odom_frame>odom</odom_frame>
       <robot_base_frame>base_link</robot_base_frame>
       <dimensions>3</dimensions>
       <odom_publish_frequency>100</odom_publish_frequency>
