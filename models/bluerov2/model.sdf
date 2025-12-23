@@ -21,7 +21,7 @@
       <visual name="base_link_visual">
         <geometry>
           <mesh>
-            <uri>/home/auv/ceto_ws/src/ceto_description/models/meshes/bluerov2.dae</uri>
+            <uri>/home/auv24/ceto_ws/src/ceto_description/models/meshes/bluerov2.dae</uri>
             <scale>0.025 0.025 0.025</scale>
           </mesh>
         </geometry>
@@ -45,6 +45,8 @@
       </sensor>
 
     </link>
+
+
 
     <!-- <link name="camera_link">
       <inertial>
@@ -86,8 +88,8 @@
 
     <!-- Hydrodynamics plugin -->
     <plugin
-        filename="libignition-gazebo-hydrodynamics-system"
-        name="ignition::gazebo::systems::Hydrodynamics">
+        filename="gz-sim-hydrodynamics-system"
+        name="gz::sim::systems::Hydrodynamics">
       <link_name>base_link</link_name>
       <water_density>1025.0</water_density>
       <!-- Added mass: -->
@@ -119,7 +121,7 @@
         <pose>0 0 0 -1.571 0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/auv/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
+            <uri>/home/auv24/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -142,7 +144,7 @@
         <pose>0 0 0 -1.571 0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/auv/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
+            <uri>/home/auv24/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -165,7 +167,7 @@
         <pose>0 0 0 1.571 0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/auv/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
+            <uri>/home/auv24/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -188,7 +190,7 @@
         <pose>0 0 0 1.571 0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/auv/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
+            <uri>/home/auv24/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -211,7 +213,7 @@
         <pose>0 0 0 -1.571 0 1.571</pose>
         <geometry>
           <mesh>
-            <uri>/home/auv/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
+            <uri>/home/auv24/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -234,7 +236,7 @@
         <pose>0 0 0 1.571 0 1.571</pose>
         <geometry>
           <mesh>
-            <uri>/home/auv/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
+            <uri>/home/auv24/ceto_ws/src/ceto_description/models/meshes/ccw_prop.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -300,8 +302,8 @@
     </joint>
 
     <plugin
-        filename="libignition-gazebo-thruster-system"
-        name="ignition::gazebo::systems::Thruster">
+        filename="gz-sim-thruster-system"
+        name="gz::sim::systems::Thruster">
       <namespace>bluerov2</namespace>
       <joint_name>thruster1_joint</joint_name>
       <thrust_coefficient>0.02</thrust_coefficient>
@@ -311,8 +313,8 @@
     </plugin>
 
     <plugin
-        filename="libignition-gazebo-thruster-system"
-        name="ignition::gazebo::systems::Thruster">
+        filename="gz-sim-thruster-system"
+        name="gz::sim::systems::Thruster">
       <namespace>bluerov2</namespace>
       <joint_name>thruster2_joint</joint_name>
       <thrust_coefficient>0.02</thrust_coefficient>
@@ -322,8 +324,8 @@
     </plugin>
 
     <plugin
-        filename="libignition-gazebo-thruster-system"
-        name="ignition::gazebo::systems::Thruster">
+        filename="gz-sim-thruster-system"
+        name="gz::sim::systems::Thruster">
       <namespace>bluerov2</namespace>
       <joint_name>thruster3_joint</joint_name>
       <!-- Reverse spin to balance torque -->
@@ -334,8 +336,8 @@
     </plugin>
 
     <plugin
-        filename="libignition-gazebo-thruster-system"
-        name="ignition::gazebo::systems::Thruster">
+        filename="gz-sim-thruster-system"
+        name="gz::sim::systems::Thruster">
       <namespace>bluerov2</namespace>
       <joint_name>thruster4_joint</joint_name>
       <!-- Reverse spin to balance torque -->
@@ -346,8 +348,8 @@
     </plugin>
 
     <plugin
-        filename="libignition-gazebo-thruster-system"
-        name="ignition::gazebo::systems::Thruster">
+        filename="gz-sim-thruster-system"
+        name="gz::sim::systems::Thruster">
       <namespace>bluerov2</namespace>
       <joint_name>thruster5_joint</joint_name>
       <thrust_coefficient>0.02</thrust_coefficient>
@@ -357,8 +359,8 @@
     </plugin>
 
     <plugin
-        filename="libignition-gazebo-thruster-system"
-        name="ignition::gazebo::systems::Thruster">
+        filename="gz-sim-thruster-system"
+        name="gz::sim::systems::Thruster">
       <namespace>bluerov2</namespace>
       <joint_name>thruster6_joint</joint_name>
       <!-- Reverse spin to balance torque -->
@@ -369,8 +371,8 @@
     </plugin>
 
     <plugin
-      filename="libignition-gazebo-odometry-publisher-system"
-      name="ignition::gazebo::systems::OdometryPublisher">
+      filename="gz-sim-odometry-publisher-system"
+      name="gz::sim::systems::OdometryPublisher">
       <odom_frame>odom</odom_frame>
       <robot_base_frame>base_link</robot_base_frame>
       <dimensions>3</dimensions>
@@ -378,13 +380,25 @@
     </plugin>
 
     <plugin
-      filename="libignition-gazebo-joint-state-publisher-system"
-      name="ignition::gazebo::systems::JointStatePublisher">
+      filename="gz-sim-joint-state-publisher-system"
+      name="gz::sim::systems::JointStatePublisher">
     </plugin>
     
-    <plugin filename="libignition-gazebo-imu-system.so"
-            name="ignition::gazebo::systems::Imu">
+    <plugin filename="gz-sim-imu-system"
+            name="gz::sim::systems::Imu">
+    </plugin>
+    <plugin
+      filename="sea_pressure_sensor"
+      name=" dave_gz_sensor_plugins::SubseaPressureSensorPlugin">
+      <namespace>bluerov2</namespace>
+      <topic>sea_pressure</topic>
+      <update_rate>10</update_rate>
+      <noise_sigma>3.0</noise_sigma>
+      <estimate_depth_on>true</estimate_depth_on>
+      <standard_pressure>101.325</standard_pressure>
+      <kPa_per_meter>9.80638</kPa_per_meter>
     </plugin>
 
+    
   </model>
 </sdf>

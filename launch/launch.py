@@ -6,6 +6,8 @@ from launch.actions import (
     DeclareLaunchArgument,
     IncludeLaunchDescription,
     SetEnvironmentVariable,
+    ExecuteProcess,
+    TimerAction
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, Command
@@ -33,19 +35,40 @@ def generate_launch_description():
     rviz_arg = LaunchConfiguration('rvizconfig')
 
     # ---------------------------------------------------------
-    # 2. ENVIRONMENT VARIABLES (RESOURCES FOR GAZEBO)
+    # 2. ENVIRONMENT (make sure gz/gazebo can find models)
     # ---------------------------------------------------------
-    existing_gz = os.environ.get('GZ_SIM_RESOURCE_PATH', '')
-    existing_ign = os.environ.get('IGN_GAZEBO_RESOURCE_PATH', '')
+    # Append our package models to the various resource/model env vars used by gz/gazebo
+    # Note: reads the current value of env in the launching process and appends to it.
+    gazebo_model_path_action = SetEnvironmentVariable(
+        name='GAZEBO_MODEL_PATH',
+        value=model_dir + ':' + os.environ.get('GAZEBO_MODEL_PATH', '')
+    )
 
-    new_gz_path = f"{model_dir}:{existing_gz}" if existing_gz else model_dir
-    new_ign_path = f"{model_dir}:{existing_ign}" if existing_ign else model_dir
+    gz_sim_resource_path_action = SetEnvironmentVariable(
+        name='GZ_SIM_RESOURCE_PATH',
+        value=model_dir + ':' + os.environ.get('GZ_SIM_RESOURCE_PATH', '')
+    )
 
-    set_gz_env = SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', new_gz_path)
-    set_ign_env = SetEnvironmentVariable('IGN_GAZEBO_RESOURCE_PATH', new_ign_path)
+    gz_resource_path_action = SetEnvironmentVariable(
+        name='GZ_RESOURCE_PATH',
+        value=model_dir + ':' + os.environ.get('GZ_RESOURCE_PATH', '')
+    )
 
     # ---------------------------------------------------------
-    # 3. ROBOT DESCRIPTION (URDF → TF)
+    # 3. START GZ-SIM (server + GUI)
+    # ---------------------------------------------------------
+    start_gazebo_cmd = ExecuteProcess(
+        cmd=['gz', 'sim', '-r', '-v', '4', world_path],
+        output='screen',
+        additional_env={
+            'GAZEBO_MODEL_PATH': model_dir + ':' + os.environ.get('GAZEBO_MODEL_PATH', ''),
+            'GZ_SIM_RESOURCE_PATH': model_dir + ':' + os.environ.get('GZ_SIM_RESOURCE_PATH', ''),
+            'GZ_RESOURCE_PATH': model_dir + ':' + os.environ.get('GZ_RESOURCE_PATH', '')
+        }
+    )
+
+    # ---------------------------------------------------------
+    # 4. ROBOT DESCRIPTION (URDF → TF)
     # ---------------------------------------------------------
     robot_description = ParameterValue(
         Command(['xacro ', model_arg]),
@@ -64,19 +87,7 @@ def generate_launch_description():
     )
 
     # ---------------------------------------------------------
-    # 4. GAZEBO SIM
-    # ---------------------------------------------------------
-    gazebo_sim = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
-        ),
-        launch_arguments={
-            'gz_args': f"-r -v 4 {world_path}"
-        }.items()
-    )
-
-    # ---------------------------------------------------------
-    # 5. SPAWN THE BLUEROV2 MODEL
+    # 5. SPAWN THE BLUEROV2 MODEL (delayed to avoid race)
     # ---------------------------------------------------------
     spawn_bluerov2 = Node(
         package='ros_gz_sim',
@@ -90,8 +101,14 @@ def generate_launch_description():
         output='screen'
     )
 
+    # Delay the spawn a bit so gz-sim has time to start and register services
+    spawn_bluerov2_delayed = TimerAction(
+        period=3.0,
+        actions=[spawn_bluerov2]
+    )
+
     # ---------------------------------------------------------
-    # 6. ROS-GAZEBO BRIDGE
+    # 6. ROS-GZ BRIDGE
     # ---------------------------------------------------------
     bridge = Node(
         package='ros_gz_bridge',
@@ -104,18 +121,7 @@ def generate_launch_description():
     )
 
     # ---------------------------------------------------------
-    # 7. STATIC TRANSFORM (gz model name → ros base_link)
-    # ---------------------------------------------------------
-    # tf_glue = Node(
-    #     package='tf2_ros',
-    #     executable='static_transform_publisher',
-    #     arguments=['0', '0', '0', '0', '0', '0', 'bluerov2', 'base_link'],
-    #     name='gz_to_ros_tf_publisher',
-    #     output='screen'
-    # )
-
-    # ---------------------------------------------------------
-    # 8. RVIZ
+    # 7. RVIZ
     # ---------------------------------------------------------
     rviz = Node(
         package='rviz2',
@@ -126,7 +132,7 @@ def generate_launch_description():
     )
 
     # ---------------------------------------------------------
-    # 9. LAUNCH DESCRIPTION
+    # 8. LAUNCH DESCRIPTION
     # ---------------------------------------------------------
     return LaunchDescription([
         # Arguments
@@ -146,15 +152,17 @@ def generate_launch_description():
             description='Path to RViz configuration'
         ),
 
-        # Environment Variables
-        set_gz_env,
-        set_ign_env,
+        # Environment Variables (actions)
+        gazebo_model_path_action,
+        gz_sim_resource_path_action,
+        gz_resource_path_action,
 
-        # Nodes
-        gazebo_sim,
-        spawn_bluerov2,
+        # Start gz-sim (server + GUI)
+        start_gazebo_cmd,
+
+        # Nodes: spawn is delayed to avoid race with gz-sim start
+        spawn_bluerov2_delayed,
         bridge,
         robot_state_publisher,
-        # tf_glue,
         rviz,
     ])
